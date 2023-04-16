@@ -122,14 +122,14 @@ state.rows = calculateRows();
     <table>
       <tr>
         <th>Note</th>
-        <th>Index</th>
         <th>Mit {{ state.textLength }} Wörtern</th>
+        <th>Index</th>
       </tr>
       <tr v-for="row in state.rows">
         <td>{{ row.grade }}</td>
-        <td>{{ `${row.from}`.replace(".", ",") }} - {{ `${row.upto}`.replace(".", ",") }}</td>
         <td v-if="row.low == row.high">{{ row.low }}</td>
         <td v-else>{{ row.low }}F - {{ row.high }}F</td>
+        <td>{{ `${row.from}`.replace(".", ",") }} - {{ `${row.upto}`.replace(".", ",") }}</td>
       </tr>
     </table>
   </main>
