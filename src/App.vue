@@ -164,7 +164,7 @@ label {
   }
   input {
     background-color: transparent;
-    color: var(--vt-c-text-dark-2);
+    color: var(--color-text);
     border: none;
     border-bottom: solid 1px gray;
     width: 100px;
