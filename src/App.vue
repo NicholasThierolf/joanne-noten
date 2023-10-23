@@ -120,6 +120,9 @@
 				@keyup="state.rows = calculateRows()"
 				@change="state.rows = calculateRows()"
 			/>
+			<span class="naughty-wink" :data-visible="state.textLength === 69"
+				>😉</span
+			>
 		</label>
 
 		<table>
@@ -156,6 +159,9 @@
 			border: solid 1px var(--vt-c-text-dark-2);
 			padding: 0 20px;
 			text-align: left;
+			&:last-child {
+				min-width: 120px;
+			}
 		}
 		th {
 			font-weight: bold;
@@ -171,6 +177,7 @@
 		display: flex;
 		flex-direction: column;
 		margin-bottom: 30px;
+		position: relative;
 		span {
 			font-size: 22px;
 		}
@@ -181,6 +188,17 @@
 			border-bottom: solid 1px gray;
 			width: 100px;
 			font-size: 16px;
+		}
+		.naughty-wink {
+			opacity: 0;
+			font-size: 16px;
+			transition: opacity 0.3s;
+			position: absolute;
+			bottom: 0;
+			right: calc(100% + 5px);
+			&[data-visible="true"] {
+				opacity: 1;
+			}
 		}
 	}
 </style>
