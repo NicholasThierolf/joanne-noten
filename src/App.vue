@@ -1,182 +1,193 @@
 <script setup>
-import {reactive} from 'vue';
+	import { reactive } from "vue";
 
-const lookup = [
-  {
-    from: 0,
-    upto: 0.1,
-    grade: "1"
-  },
-  {
-    from: 0.2,
-    upto: 1.7,
-    grade: "1-"
-  },
-  {
-    from: 1.8,
-    upto: 2.8,
-    grade: "2+"
-  },
-  {
-    from: 2.9,
-    upto: 3.9,
-    grade: "2"
-  },
-  {
-    from: 4,
-    upto: 5.3,
-    grade: "2-"
-  },
-  {
-    from: 5.4,
-    upto: 6.6,
-    grade: "3+"
-  },
-  {
-    from: 6.7,
-    upto: 7.8,
-    grade: "3"
-  },
-  {
-    from: 7.9,
-    upto: 9,
-    grade: "3-"
-  },
-  {
-    from: 9.1,
-    upto: 10.4,
-    grade: "4+"
-  },
-  {
-    from: 10.5,
-    upto: 11.7,
-    grade: "4"
-  },
-  {
-    from: 11.8,
-    upto: 12.9,
-    grade: "4-"
-  },
-  {
-    from: 13,
-    upto: 14,
-    grade: "5+"
-  },
-  {
-    from: 14.1,
-    upto: 15.3,
-    grade: "5"
-  },
-  {
-    from: 15.4,
-    upto: 16.6,
-    grade: "5-"
-  },
-  {
-    from: 16.7,
-    upto: 17.9,
-    grade: "6+"
-  },
-  {
-    from: 18,
-    upto: "∞",
-    grade: "6"
-  }
-]
+	const lookup = [
+		{
+			from: 0,
+			upto: 0.01,
+			grade: "1",
+		},
+		{
+			from: 0.02,
+			upto: 0.05,
+			grade: "1-",
+		},
+		{
+			from: 0.06,
+			upto: 0.09,
+			grade: "2+",
+		},
+		{
+			from: 0.1,
+			upto: 0.16,
+			grade: "2",
+		},
+		{
+			from: 0.17,
+			upto: 0.2,
+			grade: "2-",
+		},
+		{
+			from: 0.21,
+			upto: 0.24,
+			grade: "3+",
+		},
+		{
+			from: 0.25,
+			upto: 0.31,
+			grade: "3",
+		},
+		{
+			from: 0.32,
+			upto: 0.35,
+			grade: "3-",
+		},
+		{
+			from: 0.36,
+			upto: 0.39,
+			grade: "4+",
+		},
+		{
+			from: 0.4,
+			upto: 0.46,
+			grade: "4",
+		},
+		{
+			from: 0.47,
+			upto: 0.5,
+			grade: "4-",
+		},
+		{
+			from: 0.51,
+			upto: 0.56,
+			grade: "5+",
+		},
+		{
+			from: 0.57,
+			upto: 0.69,
+			grade: "5",
+		},
+		{
+			from: 0.7,
+			upto: 0.75,
+			grade: "5-",
+		},
+		{
+			from: 0.76,
+			upto: 1,
+			grade: "6",
+		},
+	];
 
-function calculateRows(){
-  let lastMistakes = -0.5;
-  return lookup.map(row => {
-    let low = lastMistakes + 0.5;
-    let high = Math.floor((row.upto*state.textLength/100)*2 + 0.09)/2;
-    lastMistakes = high;
-    if(row.upto == "∞" ) high = "∞";
-    return {
-      from: row.from,
-      upto: row.upto,
-      grade: row.grade,
-      low: low,
-      high: high
-    }
-  });
-}
+	function calculateRows() {
+		let lastMistakes = -0.5;
+		let returnMap = lookup.map((row) => {
+			let low = lastMistakes + 0.5;
+			let high =
+				Math.floor(
+					((row.upto * state.textLength * 100) / 100) * 2 + 0.09
+				) / 2;
+			lastMistakes = high;
+			if (row.upto == "∞") high = "∞";
+			return {
+				from: row.from,
+				upto: row.upto,
+				grade: row.grade,
+				low: low,
+				high: high,
+			};
+		});
+		console.log(returnMap);
+		return returnMap;
+	}
 
-const state = reactive({
-  textLength: 100,
-  rows: []
-})
+	const state = reactive({
+		textLength: 100,
+		rows: [],
+	});
 
-state.rows = calculateRows();
-
+	state.rows = calculateRows();
 </script>
 
 <template>
-  <main>
-    <h1>Fehlerindexrechner</h1>
-    <label>
-      <span>Wörter:</span>
-      <input type="number" v-model="state.textLength" @keyup="state.rows = calculateRows()" @change="state.rows = calculateRows()">
-    </label>
-    
+	<main>
+		<h1>Notenrechner</h1>
+		<label>
+			<span>Gesamtpunktzahl:</span>
+			<input
+				type="number"
+				v-model="state.textLength"
+				@keyup="state.rows = calculateRows()"
+				@change="state.rows = calculateRows()"
+			/>
+		</label>
 
-    <table>
-      <tr>
-        <th>Note</th>
-        <th>Mit {{ state.textLength }} Wörtern</th>
-        <th>Index</th>
-      </tr>
-      <tr v-for="row in state.rows">
-        <td>{{ row.grade }}</td>
-        <td v-if="row.low == row.high">{{ row.low }}</td>
-        <td v-else>{{ row.low }}F - {{ row.high }}F</td>
-        <td>{{ `${row.from}`.replace(".", ",") }} - {{ `${row.upto}`.replace(".", ",") }}</td>
-      </tr>
-    </table>
-  </main>
+		<table>
+			<tr>
+				<th>Prozent</th>
+				<th>Note</th>
+				<th>Punkte</th>
+			</tr>
+			<tr v-for="row in state.rows">
+				<td>
+					{{ Math.round((1 - row.from) * 100) }}% -
+					{{ Math.round((1 - row.upto) * 100) }}%
+				</td>
+				<td>{{ row.grade }}</td>
+				<td v-if="row.low == row.high">
+					{{ state.textLength - row.low }}
+				</td>
+				<td v-else>
+					{{ state.textLength - row.low }} -
+					{{ state.textLength - row.high }}
+				</td>
+			</tr>
+		</table>
+	</main>
 </template>
 
 <style scoped lang="scss">
-table {
-  border: solid 1px var(--vt-c-text-dark-2);
-  border-spacing: 0;
-  border-collapse: collapse;
-  td, th {
-    border: solid 1px var(--vt-c-text-dark-2);
-    padding: 0 20px;
-    text-align: left;
-  }
-  th {
-    font-weight: bold;
-  }
-}
+	table {
+		border: solid 1px var(--vt-c-text-dark-2);
+		border-spacing: 0;
+		border-collapse: collapse;
+		td,
+		th {
+			border: solid 1px var(--vt-c-text-dark-2);
+			padding: 0 20px;
+			text-align: left;
+		}
+		th {
+			font-weight: bold;
+		}
+	}
 
-h1 {
-  font-weight: bold;
-  font-size: 32px;
-}
+	h1 {
+		font-weight: bold;
+		font-size: 32px;
+	}
 
-label {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 30px;
-  span {
-    font-size: 22px;
-  }
-  input {
-    background-color: transparent;
-    color: var(--color-text);
-    border: none;
-    border-bottom: solid 1px gray;
-    width: 100px;
-    font-size: 16px;
-  }
-}
-
+	label {
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 30px;
+		span {
+			font-size: 22px;
+		}
+		input {
+			background-color: transparent;
+			color: var(--color-text);
+			border: none;
+			border-bottom: solid 1px gray;
+			width: 100px;
+			font-size: 16px;
+		}
+	}
 </style>
 
 <style>
-  #app {
-    display: flex;
-    justify-content: center;
-  }
+	#app {
+		display: flex;
+		justify-content: center;
+	}
 </style>
